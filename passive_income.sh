@@ -1,7 +1,5 @@
 #!/bin/bash
 # 融合版脚本：自动安装ProxyRack和RePocket
-# 基于 https://github.com/spiritLHLS/proxyrack-one-click-command-installation
-# 和 https://github.com/spiritLHLS/repocket-one-click-command-installation
 
 utf8_locale=$(locale -a 2>/dev/null | grep -i -m 1 -E "UTF-8|utf8")
 if [[ -z "$utf8_locale" ]]; then
