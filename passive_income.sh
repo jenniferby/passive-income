@@ -104,16 +104,16 @@ input_token() {
 
 # 为ProxyRack创建延迟注册脚本
 create_delay_script() {
-  cat > /tmp/delay_register.sh << EOF
+  cat > /tmp/delay_register.sh << 'EOF'
 #!/bin/bash
-PRTOKEN="\$1"
-uuid="\$2"
-dname="\$3"
+PRTOKEN="$1"
+uuid="$2"
+dname="$3"
 
 echo "Starting delayed registration with:"
-echo "API Key: \$PRTOKEN"
-echo "UUID: \$uuid"
-echo "Device name: \$dname"
+echo "API Key: $PRTOKEN"
+echo "UUID: $uuid"
+echo "Device name: $dname"
 
 # 等待2分钟
 echo "Waiting 2 minutes before first registration attempt..."
@@ -121,22 +121,24 @@ sleep 2m
 
 # 尝试最多5次，每次间隔3分钟
 for attempt in {1..5}; do
-  echo "Attempt \$attempt to register device..."
-  response=\$(curl -s \\
-    -X POST https://peer.proxyrack.com/api/device/add \\
-    -H "Api-Key: \$PRTOKEN" \\
-    -H "Content-Type: application/json" \\
-    -H "Accept: application/json" \\
-    -d "{\\\"device_id\\\":\\"\$uuid\\",\\\"device_name\\\":\\"\$dname\\"}")
+  echo "Attempt $attempt to register device..."
   
-  echo "Response: \$response"
+  # 修复JSON格式问题，使用单引号包围整个数据部分
+  response=$(curl -s \
+    -X POST https://peer.proxyrack.com/api/device/add \
+    -H "Api-Key: $PRTOKEN" \
+    -H "Content-Type: application/json" \
+    -H "Accept: application/json" \
+    -d '{"device_id":"'"$uuid"'","device_name":"'"$dname"'"}')
+  
+  echo "Response: $response"
   
   # 检查是否成功
-  if [[ "\$response" == *"success\":true"* ]]; then
+  if [[ "$response" == *"status\":\"success"* ]]; then
     echo "Device registered successfully!"
     break
   else
-    if [ \$attempt -lt 5 ]; then
+    if [ $attempt -lt 5 ]; then
       echo "Registration failed, waiting 3 minutes before next attempt..."
       sleep 3m
     else
