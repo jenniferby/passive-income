@@ -203,9 +203,12 @@ install_proxyrack() {
   yellow " Create the proxyrack container.\n "
   uuid=$(cat /dev/urandom | LC_ALL=C tr -dc 'A-F0-9' | dd bs=1 count=64 2>/dev/null)
   echo "${uuid}" >/usr/local/bin/proxyrack_uuid
-  ori=$(date | md5sum)
-  dname=${ori: 2: 9}
+  # 修改设备名称生成方式，添加随机数和时间戳
+  timestamp=$(date +%s)
+  random_num=$((RANDOM % 1000))
+  dname="pr-${timestamp}-${random_num}"
   echo "${dname}" >/usr/local/bin/proxyrack_dname
+  
   docker pull proxyrack/pop
   docker run -d --name "proxyrack" --restart always -e UUID="$uuid" proxyrack/pop
   
