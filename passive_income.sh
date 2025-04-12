@@ -116,8 +116,8 @@ echo "UUID: $uuid"
 echo "Device name: $dname"
 
 # 等待2分钟
-echo "Waiting 2 minutes before first registration attempt..."
-sleep 2m
+echo "Waiting 1 minutes before first registration attempt..."
+sleep 1m
 
 # 尝试最多5次，每次间隔3分钟
 for attempt in {1..5}; do
@@ -135,12 +135,12 @@ for attempt in {1..5}; do
   
   # 检查是否成功
   if [[ "$response" == *"status\":\"success"* ]]; then
-    echo "Device registered successfully!"
+    echo "Device registered successfully"
     break
   else
     if [ $attempt -lt 5 ]; then
-      echo "Registration failed, waiting 3 minutes before next attempt..."
-      sleep 3m
+      echo "Registration failed, waiting 1 minutes before next attempt..."
+      sleep 1m
     else
       echo "All registration attempts failed."
     fi
